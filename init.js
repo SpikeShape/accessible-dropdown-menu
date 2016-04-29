@@ -2,9 +2,7 @@
  * Functionality to open Navigation.
  * @module NavMain
  * @requires jquery
- * @requires jquery.exists
- * @requires jquery.touch
- * @author Christian Schramm
+ * @author schramm@webit.de, ruediger@webit.de
  */
 define(['jquery'], function($) {
 
@@ -74,10 +72,10 @@ define(['jquery'], function($) {
     },
 
     /**
-     * Show Submenu.
+     * Shows Submenu.
      * @function _toggleSubMenu
      * @private
-     * @param {$object} element - element used as root to fint link and sub menu to be opened
+     * @param {$object} element - element used as root to find link and sub menu to be opened
      */
     _toggleSubMenu: function(element) {
       if(element.is('a') || element.find('a').length) {
@@ -88,7 +86,7 @@ define(['jquery'], function($) {
     },
 
     /**
-     * Open Submenu and sets ARIA attributes
+     * Opens Submenu and sets ARIA attributes
      * @function _showSubmenu
      * @private
      */
