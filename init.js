@@ -6,7 +6,7 @@
  * @requires jquery.touch
  * @author Christian Schramm
  */
-define(['jquery', 'jquery.exists', 'jquery.touch'], function($, exists) {
+define(['jquery'], function($) {
 
   'use strict';
 
@@ -18,19 +18,12 @@ define(['jquery', 'jquery.exists', 'jquery.touch'], function($, exists) {
      * @private
      */
     _cacheElements: function() {
-      this.$html = $('html');
-      this.$body = $('body');
-      this.$nav_toggle = $('.nav-toggle');
       this.$sub_menu = $('.sub-menu');
-      this.$nav_container = $('.nav-container');
-      this.$nav_meta = $('.nav-meta');
-      this.$search_toggle = $('.search-toggle');
       this.$nav_layer_toggle = $('.nav-layer-toggle');
       this.$nav_item = $('.nav-main li');
-      this.$nav_layer1_elements = $('.nav-layer1 > li');
 
       this.id_string_module = 'nav-main';
-      this.id_unique_module = this.id_string_module +  '-' + new Date().getTime() + new Date().getTime();
+      this.id_unique_module = this.id_string_module +  '-' + new Date().getTime();
     },
 
     /**
@@ -39,13 +32,11 @@ define(['jquery', 'jquery.exists', 'jquery.touch'], function($, exists) {
      * @public
      * @param {string} mediaquery - current css font-family at the html element that specifies the screen size
      */
-    init: function(mediaquery) {
+    init: function() {
       NavMain._cacheElements();
       NavMain._setAriaAttributes();
 
-      NavMain.$nav_container.exists(function() {
-        NavMain._bindEvents(mediaquery);
-      });
+      NavMain._bindEvents();
     },
 
     /**
@@ -54,105 +45,32 @@ define(['jquery', 'jquery.exists', 'jquery.touch'], function($, exists) {
      * @private
      * @param {string} mediaquery - current css font-family at the html element that specifies the screen size
      */
-    _bindEvents: function(mediaquery) {
-      this.$nav_toggle.on('tap', function() {
-        NavMain._toggleNavigationContainer();
-        NavMain._toggleBodyClass();
-        NavMain._toggleMetaNav();
-        NavMain._hideSearchToggle();
+    _bindEvents: function() {
+
+      NavMain.$nav_layer_toggle.on('keydown', function(event) {
+        NavMain._handleKeyInteraction.call($(this), event);
       });
 
-      if (Modernizr.touch) {
-        this.$nav_layer_toggle.on('tap', function(event) {
-          event.preventDefault();
+      NavMain.$nav_item.on('mouseenter', function() {
+        NavMain._showSubmenu.call($(this));
+      });
 
-          if ($(this).closest('li').hasClass('active')) {
-            NavMain._hideSubmenu.call($(this).closest('li'));
-          } else {
-            NavMain._showSubmenu.call($(this).closest('li'));
-          }
-        });
-      }
+      NavMain.$nav_item.on('mouseleave', function() {
+        NavMain._hideSubmenu.call($(this));
+      });
 
-      if ((mediaquery !== 'xs') && (mediaquery !== 'sm') && (!Modernizr.touch)) {
-        NavMain.$nav_layer_toggle.on('keydown', function(event) {
-          NavMain._handleKeyInteraction.call($(this), event);
-        });
+      NavMain.$nav_item.on('focusout', function() {
+        NavMain._hideSubmenu.call($(this));
+      });
 
-        NavMain.$nav_layer1_elements.on('mouseenter', function() {
-          NavMain._toggleBodyClass();
-        });
+      NavMain.$sub_menu.on('focusin', function() {
+        NavMain._showSubmenu.call($(this).closest('li'));
+      });
 
-        NavMain.$nav_layer1_elements.on('mouseleave', function() {
-          NavMain._toggleBodyClass();
-        });
+      NavMain.$sub_menu.on('focusout', function() {
+        NavMain._hideSubmenu.call($(this));
+      });
 
-        NavMain.$nav_layer1_elements.on('focusin', function() {
-          NavMain._toggleBodyClass();
-        });
-
-        NavMain.$nav_layer1_elements.on('focusout', function() {
-          NavMain._toggleBodyClass();
-        });
-
-        NavMain.$nav_item.on('mouseenter', function() {
-          NavMain._showSubmenu.call($(this));
-        });
-
-        NavMain.$nav_item.on('mouseleave', function() {
-          NavMain._hideSubmenu.call($(this));
-        });
-
-        NavMain.$nav_item.on('focusout', function() {
-          NavMain._hideSubmenu.call($(this));
-        });
-
-        NavMain.$sub_menu.on('focusin', function() {
-          NavMain._showSubmenu.call($(this).closest('li'));
-        });
-
-        NavMain.$sub_menu.on('focusout', function() {
-          NavMain._hideSubmenu.call($(this));
-        });
-      }
-
-    },
-
-    /**
-     * Binds all events to jQuery DOM objects.
-     * @function _toggleNavigationContainer
-     * @private
-     */
-    _toggleNavigationContainer: function() {
-      this.$nav_container.toggleClass('active');
-      this.$nav_toggle.toggleClass('active');
-    },
-
-    /**
-     * Binds all events to jQuery DOM objects.
-     * @function _toggleNavigationContainer
-     * @private
-     */
-    _toggleBodyClass: function() {
-      this.$body.toggleClass('bg-dark');
-    },
-
-    /**
-     * Open .nav-meta.
-     * @function _toggleMetaNav
-     * @private
-     */
-    _toggleMetaNav: function() {
-      this.$nav_meta.toggleClass('active');
-    },
-
-    /**
-     * Hide .search-toggle if .nav-main is active.
-     * @function _hideSearchToggle
-     * @private
-     */
-    _hideSearchToggle: function() {
-      this.$search_toggle.toggleClass('inactive');
     },
 
     /**
