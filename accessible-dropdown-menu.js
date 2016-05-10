@@ -6,11 +6,11 @@
 
     var settings = $.extend({
         // These are the defaults.
-        nav_main: '.nav-main', // parent class all the other elements have to enclosed by
-        nav_items: 'li', // element holding both the toggle and the next layer
-        nav_layer_toggle: '.nav-layer-toggle', // menu links expressed as having the sub menu
-        sub_menu : '.sub-menu', // nav layer beginning from level 2
-        class_active: 'active' // CSS class that indicates an active menu
+        module_name: 'nav-main', // string that is used to generate unique IDs
+        nav_items: 'li', // element holding both the links and the next layer
+        sub_menu : '.sub-menu', // CSS selector for the nav layers that need to be opened and closed
+        nav_layer_toggle: '.nav-layer-toggle', // CSS selector of elements that toggle the sub_menu elements
+        class_active: 'active' // CSS class that indicates an active sub_menu
     }, options );
 
     /**
@@ -23,15 +23,13 @@
       $nav_layer_toggle = $(settings.nav_layer_toggle);
       $nav_item = main_node.find(settings.nav_items);
 
-      id_string_module = settings.nav_main;
-      id_unique_module = id_string_module +  '-' + new Date().getTime();
+      id_unique_module = settings.module_name +  '-' + new Date().getTime();
     }
 
     /**
      * Initiates the module.
      * @function init
      * @public
-     * @param {string} mediaquery - current css font-family at the html element that specifies the screen size
      */
     function init() {
       _cacheElements();
@@ -46,7 +44,6 @@
      * Binds all events to jQuery DOM objects.
      * @function _bindEvents
      * @private
-     * @param {string} mediaquery - current css font-family at the html element that specifies the screen size
      */
     function _bindEvents() {
 
