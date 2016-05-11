@@ -6,11 +6,13 @@
 
     var settings = $.extend({
         // These are the defaults.
-        module_name: 'nav-main', // string that is used to generate unique IDs
+        module_name: 'accessible-dropdown-menu', // string that is used to generate unique IDs
         nav_items: 'li', // element holding both the links and the next layer
         sub_menu : '.sub-menu', // CSS selector for the nav layers that need to be opened and closed
         nav_layer_toggle: '.nav-layer-toggle', // CSS selector of elements that toggle the sub_menu elements
-        class_active: 'active' // CSS class that indicates an active sub_menu
+        class_visible: 'opened', // CSS class that indicates an active sub_menu
+        class_current: 'current', // CSS class that indicates a current menu link
+        text_current: 'This is your current location' // aria-label for current menu items
     }, options );
 
     /**
@@ -74,31 +76,18 @@
     }
 
     /**
-     * Shows Submenu.
-     * @function _toggleSubMenu
-     * @private
-     * @param {$object} element - element used as root to find link and sub menu to be opened
-     */
-    function _toggleSubMenu(element) {
-      if(element.is('a') || element.find('a').length) {
-        element.toggleClass(settings.class_active);
-        element.closest(settings.nav_items).toggleClass(settings.class_active);
-        element.next(settings.sub_menu).toggleClass(settings.class_active);
-      }
-    }
-
-    /**
      * Opens Submenu and sets ARIA attributes
      * @function _showSubmenu
      * @private
      */
     function _showSubmenu() {
-      var $this = $(this), // should be li
-          $navToggle = $this.find(settings.nav_layer_toggle).first(),
-          $submenu = $this.find(settings.sub_menu).first();
+      var $li = $(this),
+          $navToggle = $li.find(settings.nav_layer_toggle).first(),
+          $submenu = $li.find(settings.sub_menu).first();
 
-      if (!$navToggle.is('strong') && !$this.closest(settings.nav_items).find(settings.nav_layer_toggle).first().is('strong')) {
-        $this.addClass(settings.class_active);
+      $li.addClass(settings.class_visible);
+
+      if ($submenu.length) {
 
         $navToggle.attr({
           'aria-expanded': 'true',
@@ -107,7 +96,7 @@
         $submenu.attr({
           'aria-hidden': 'false',
           'aria-expanded': 'true',
-        }).addClass(settings.class_active);
+        }).addClass(settings.class_visible);
       }
     }
 
@@ -117,12 +106,13 @@
      * @private
      */
     function _hideSubmenu() {
-      var $this = $(this), // should be li
-          $navToggle = $this.find(settings.nav_layer_toggle).first(),
-          $submenu = $this.find(settings.sub_menu).first();
+      var $li = $(this),
+          $navToggle = $li.find(settings.nav_layer_toggle).first(),
+          $submenu = $li.find(settings.sub_menu).first();
 
-      if (!$navToggle.is('strong') && !$this.closest(settings.nav_items).find(settings.nav_layer_toggle).first().is('strong')) {
-        $this.removeClass(settings.class_active);
+      $li.removeClass(settings.class_visible);
+
+      if ($submenu.length) {
 
         $navToggle.attr({
           'aria-expanded': 'false',
@@ -131,7 +121,7 @@
         $submenu.attr({
           'aria-hidden': 'true',
           'aria-expanded': 'false',
-        }).removeClass(settings.class_active);
+        }).removeClass(settings.class_visible);
       }
     }
 
@@ -142,14 +132,14 @@
      * @param {object} event - default event object
      */
     function _handleKeyInteraction(event) {
-      var $this = $(this),
-          $parentLi = $(this).closest(settings.nav_items),
+      var $trigger = $(this), // setting.nav_layer_toggle
+          $parentLi = $trigger.closest(settings.nav_items),
           key = event.charCode ? event.charCode : event.keyCode ? event.keyCode : 0;
 
       switch (key) {
         case 13: // Enter
         case 32: // Spacebar
-          if ($this.attr('aria-expanded') === 'false') {
+          if ($trigger.attr('aria-expanded') === 'false') {
             event.preventDefault();
             _showSubmenu.call($parentLi);
           }
@@ -170,17 +160,35 @@
     function _setAriaAttributes() {
       $nav_layer_toggle.each(function(index) {
         var $trigger = $(this),
-            $submenu = $trigger.next(settings.sub_menu),
-            module_id_string = id_unique_module + '-' + index;
+            $submenu_layer = $trigger.closest(settings.nav_items).find(settings.sub_menu),
+            module_id_string = id_unique_module + '-' + index,
+            aria_haspopup_value = $submenu_layer.length ? true : false,
+            is_current = $trigger.hasClass(settings.class_current);
 
         $trigger.attr({
-          'aria-controls': module_id_string,
+          'aria-haspopup': aria_haspopup_value,
         });
 
-        $submenu.attr({
-          'id': module_id_string,
-        });
+        if (is_current) {
+          $trigger.attr({
+            'aria-label': settings.text_current
+          });
+        }
+
+        if (aria_haspopup_value) {
+          $trigger.attr({
+            'aria-controls': module_id_string,
+            'aria-expanded': 'false'
+          });
+
+          $submenu_layer.attr({
+            'role': 'group',
+            'id': module_id_string
+          });
+        }
       });
+
+
     }
 
     return init();
