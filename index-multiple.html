@@ -32,6 +32,10 @@
       max-width: 960px;
     }
 
+    .nav-main li {
+      display: inline-block;
+    }
+
     .nav-main a {
       display: block;
       padding: 5px 10px;
@@ -40,10 +44,6 @@
 
     .nav-main > ol {
       width: 100%;
-    }
-
-    .nav-main > ul > li {
-      display: inline-block;
     }
 
     .nav-main > ul > li.opened > a {
@@ -65,14 +65,16 @@
       background-color: #ccc;
     }
 
-    .nav-main > ul > li {
+    .nav-main ul {
       position: relative;
     }
 
-    .nav-main > ul > li > .sub-menu {
+    .nav-main .sub-menu {
       left: 0;
       opacity: 0;
       position: absolute;
+      right: 0;
+      top: 100%;
     }
   </style>
 </head>
@@ -83,13 +85,13 @@
       <nav id="menu" class="nav nav-main" role="navigation" aria-label="Hauptnavigation">
         <ul class="list-unstyled nav-layer1">
           <li>
-            <a class="nav-layer-toggle" href="#">active</a>
+            <a class="nav-layer-toggle" href="#">link has sub</a>
 
             <!-- Navigation Layer2-->
             <div class="sub-menu">
               <ul class="list-unstyled nav-layer2">
                 <li>
-                  <a class="nav-layer-toggle" href="#">link</a>
+                  <a class="nav-layer-toggle" href="#">link has sub</a>
 
                   <!-- Navigation Layer3-->
                   <div class="sub-menu">
@@ -98,48 +100,48 @@
                         <a href="#">link</a>
                       </li>
                       <li>
-                        <a href="#">aktiv</a>
+                        <a href="#">link</a>
                       </li>
                       <li>
-                        <a class="nav-layer-toggle current" href="#">
-                          aktiv &amp; Link
+                        <a class="current" href="#">
+                          current
                         </a>
                       </li>
                     </ul>
                   </div>
                 </li>
                 <li>
-                  <a class="nav-layer-toggle" href="#">link</a>
+                  <a class="nav-layer-toggle" href="#">link has sub</a>
 
                   <!-- Navigation Layer3-->
                   <div class="sub-menu">
                     <ul class="list-unstyled nav-layer3">
                       <li>
-                        <a href="#">Link</a>
+                        <a href="#">link</a>
                       </li>
-                    </Volumes/l>
+                    </ull>
                   </div>
                 </li>
                 <li>
-                  <a class="nav-layer-toggle" href="#">link</a>
+                  <a class="nav-layer-toggle" href="#">link has sub</a>
 
                   <!-- Navigation Layer3-->
                   <div class="sub-menu">
                     <ul class="list-unstyled nav-layer3">
                       <li>
-                        <a href="#">Link</a>
+                        <a href="#">link</a>
                       </li>
                     </ul>
                   </div>
                 </li>
                 <li>
-                  <a class="nav-layer-toggle" href="#">link</a>
+                  <a class="nav-layer-toggle" href="#">link has sub</a>
 
                   <!-- Navigation Layer3-->
                   <div class="sub-menu">
                     <ul class="list-unstyled nav-layer3">
                       <li>
-                        <a href="#">Link</a>
+                        <a href="#">link</a>
                       </li>
                     </ul>
                   </div>
@@ -156,37 +158,37 @@
               <!-- Navigation Layer2-->
               <ul class="list-unstyled nav-layer2">
                 <li>
-                  <a class="nav-layer-toggle" href="#">Link</a>
+                  <a class="nav-layer-toggle" href="#">link has sub</a>
 
                   <!-- Navigation Layer3-->
                   <div class="sub-menu">
                     <ul class="list-unstyled nav-layer3">
                       <li>
-                        <a href="#">Link</a>
+                        <a href="#">link</a>
                       </li>
                     </ul>
                   </div>
                 </li>
                 <li>
-                  <a class="nav-layer-toggle" href="#">Link</a>
+                  <a class="nav-layer-toggle" href="#">link has sub</a>
 
                   <!-- Navigation Layer3-->
                   <div class="sub-menu">
                     <ul class="list-unstyled nav-layer3">
                       <li>
-                        <a href="#">Link</a>
+                        <a href="#">link</a>
                       </li>
                     </ul>
                   </div>
                 </li>
                 <li>
-                  <a class="nav-layer-toggle" href="#">Link</a>
+                  <a class="nav-layer-toggle" href="#">link has sub</a>
 
                   <!-- Navigation Layer3-->
                   <div class="sub-menu">
                     <ul class="list-unstyled nav-layer3">
                       <li>
-                        <a href="#">Link</a>
+                        <a href="#">link</a>
                       </li>
                     </ul>
                   </div>
@@ -195,44 +197,44 @@
             </div>
           </li>
           <li>
-            <a class="nav-layer-toggle" href="#">submenu</a>
+            <a class="nav-layer-toggle" href="#">link has sub</a>
 
             <div class="sub-menu">
 
               <!-- Navigation Layer2-->
               <ul class="list-unstyled nav-layer2">
                 <li>
-                  <a class="nav-layer-toggle" href="#">Link</a>
+                  <a class="nav-layer-toggle" href="#">link has sub</a>
 
                   <!-- Navigation Layer3-->
                   <div class="sub-menu">
                     <ul class="list-unstyled nav-layer3">
                       <li>
-                        <a href="#">ink</a>
+                        <a href="#">link</a>
                       </li>
                     </ul>
                   </div>
                 </li>
                 <li>
-                  <a class="nav-layer-toggle" href="#">Link</a>
+                  <a class="nav-layer-toggle" href="#">link has sub</a>
 
                   <!-- Navigation Layer3-->
                   <div class="sub-menu">
                     <ol class="list-unstyled nav-layer3">
                       <li>
-                        <a href="#">Link</a>
+                        <a href="#">link</a>
                       </li>
                     </ol>
                   </div>
                 </li>
                 <li>
-                  <a class="nav-layer-toggle" href="#">Link</a>
+                  <a class="nav-layer-toggle" href="#">link has sub</a>
 
                   <!-- Navigation Layer3-->
                   <div class="sub-menu">
                     <ul class="list-unstyled nav-layer3">
                       <li>
-                        <a href="#">Link</a>
+                        <a href="#">link</a>
                       </li>
                     </ul>
                   </div>
@@ -241,11 +243,11 @@
             </div>
           </li>
           <li>
-            <a class="nav-layer-toggle" href="#">no submenu</a>
+            <a class="nav-layer-toggle" href="#">link</a>
           </li>
           <li>
             <a class="nav-layer-toggle current" href="#">
-              no submenu current
+              link current
             </a>
           </li>
         </ul>

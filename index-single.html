@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="   crossorigin="anonymous"></script>
+  <script src="accessible-dropdown-menu.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('.nav-main').accessibleDropdownMenu({
+        module_name: 'accessible-dropdown-menu', // string that is used to generate unique IDs
+        nav_items: 'li', // element holding both the links and the next layer
+        sub_menu : '.sub-menu', // CSS selector for the nav layers that need to be opened and closed
+        nav_layer_toggle: '.nav-layer-toggle', // CSS selector of elements that toggle the sub_menu elements
+        class_visible: 'opened', // CSS class that indicates an active sub_menu
+        class_current: 'current', // CSS class that indicates a current menu link
+        text_current: 'This is your current location' // aria-label for current menu items
+      });
+    });
+  </script>
+
+  <style>
+    .list-unstyled {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-main {
+      background-color: #ccc;
+      display: block;
+      margin: 0; auto;
+      max-width: 960px;
+    }
+
+    .nav-main a {
+      display: block;
+      padding: 5px 10px;
+      white-space: nowrap;
+    }
+
+    .nav-main > ol {
+      width: 100%;
+    }
+
+    .nav-main > ul > li {
+      display: inline-block;
+    }
+
+    .nav-main > ul > li.opened > a {
+      background-color: #999;
+    }
+
+    .nav-main .sub-menu {
+      transition: .2s visibility;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .nav-main .sub-menu.opened {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .sub-menu {
+      background-color: #ccc;
+    }
+
+    .nav-main > ul > li {
+      position: relative;
+    }
+
+    .nav-main > ul > li > .sub-menu {
+      left: 0;
+      opacity: 0;
+      position: absolute;
+    }
+  </style>
+</head>
+<body>
+  <div class="nav-container">
+    <div class="inner">
+
+      <nav id="menu" class="nav nav-main" role="navigation" aria-label="Hauptnavigation">
+        <ul class="list-unstyled nav-layer1">
+          <li>
+            <a class="nav-layer-toggle" href="#">link has sub</a>
+
+            <!-- Navigation Layer2-->
+            <div class="sub-menu">
+              <ul class="list-unstyled nav-layer2">
+                <li>
+                  <a href="#">link</a>
+                </li>
+                <li>
+                  <a class="nav-layer-toggle" href="#">link</a>
+                </li>
+                <li>
+                  <a class="nav-layer-toggle" href="#">link</a>
+                </li>
+                <li>
+                  <a class="nav-layer-toggle" href="#">link</a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <a class="nav-layer-toggle" href="#">
+              link has sub
+            </a>
+            <div class="sub-menu">
+
+              <!-- Navigation Layer2-->
+              <ul class="list-unstyled nav-layer2">
+                <li>
+                  <a class="nav-layer-toggle" href="#">link</a>
+                </li>
+                <li>
+                  <a class="nav-layer-toggle" href="#">link</a>
+                </li>
+                <li>
+                  <a class="nav-layer-toggle" href="#">link</a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <a class="nav-layer-toggle" href="#">link has sub</a>
+
+            <div class="sub-menu">
+
+              <!-- Navigation Layer2-->
+              <ul class="list-unstyled nav-layer2">
+                <li>
+                  <a class="nav-layer-toggle" href="#">link</a>
+                </li>
+                <li>
+                  <a class="nav-layer-toggle" href="#">link</a>
+                </li>
+                <li>
+                  <a class="nav-layer-toggle" href="#">link</a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <a class="nav-layer-toggle" href="#">link</a>
+          </li>
+          <li>
+            <a class="nav-layer-toggle current" href="#">
+              link current
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</body>
+</html>
