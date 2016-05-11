@@ -5,14 +5,14 @@
     main_node = this;
 
     var settings = $.extend({
-        // These are the defaults.
-        module_name: 'accessible-dropdown-menu', // string that is used to generate unique IDs
-        nav_items: 'li', // element holding both the links and the next layer
-        sub_menu : '.sub-menu', // CSS selector for the nav layers that need to be opened and closed
-        nav_layer_toggle: '.nav-layer-toggle', // CSS selector of elements that toggle the sub_menu elements
-        class_visible: 'opened', // CSS class that indicates an active sub_menu
-        class_current: 'current', // CSS class that indicates a current menu link
-        text_current: 'This is your current location' // aria-label for current menu items
+      // These are the defaults.
+      module_name: 'accessible-dropdown-menu', // string that is used to generate unique IDs
+      nav_items: 'li', // element holding both the links and the next layer
+      sub_menu : '.sub-menu', // CSS selector for the nav layers that need to be opened and closed
+      nav_layer_toggle: '.nav-layer-toggle', // CSS selector of elements that toggle the sub_menu elements
+      class_visible: 'opened', // CSS class that indicates an active sub_menu
+      class_current: 'current', // CSS class that indicates a current menu link
+      text_current: 'This is your current location' // aria-label for current menu items
     }, options );
 
     /**
@@ -24,6 +24,9 @@
       $sub_menu = $(settings.sub_menu);
       $nav_layer_toggle = $(settings.nav_layer_toggle);
       $nav_item = main_node.find(settings.nav_items);
+      $nav_link_current = main_node.find('.' + settings.class_current);
+
+      console.log($nav_link_current);
 
       id_unique_module = settings.module_name +  '-' + new Date().getTime();
     }
@@ -158,6 +161,12 @@
      * @private
      */
     function _setAriaAttributes() {
+      if ($nav_link_current.length) {
+        $nav_link_current.attr({
+          'aria-label': settings.text_current
+        });
+      }
+
       $nav_layer_toggle.each(function(index) {
         var $trigger = $(this),
             $submenu_layer = $trigger.closest(settings.nav_items).find(settings.sub_menu),
@@ -169,15 +178,10 @@
           'aria-haspopup': aria_haspopup_value,
         });
 
-        if (is_current) {
-          $trigger.attr({
-            'aria-label': settings.text_current
-          });
-        }
-
         if (aria_haspopup_value) {
           $trigger.attr({
             'aria-controls': module_id_string,
+            'aria-owns': module_id_string,
             'aria-expanded': 'false'
           });
 
