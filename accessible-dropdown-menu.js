@@ -1,19 +1,19 @@
 (function( $ ) {
 
   $.fn.accessibleDropdownMenu = function(options) {
+    var self = this,
+        settings = $.extend({
+        // These are the defaults.
+        module_name: 'accessible-dropdown-menu', // string that is used to generate unique IDs
+        nav_items: 'li', // element holding both the links and the next layer
+        sub_menu : '.sub-menu', // CSS selector for the nav layers that need to be opened and closed
+        nav_layer_toggle: '.nav-layer-toggle', // CSS selector of elements that toggle the sub_menu elements
+        class_visible: 'opened', // CSS class that indicates an active sub_menu
+        class_current: 'current', // CSS class that indicates a current menu link
+        text_current: 'This is your current location' // aria-label for current menu items
+      }, options ),
 
-    main_node = this;
-
-    var settings = $.extend({
-      // These are the defaults.
-      module_name: 'accessible-dropdown-menu', // string that is used to generate unique IDs
-      nav_items: 'li', // element holding both the links and the next layer
-      sub_menu : '.sub-menu', // CSS selector for the nav layers that need to be opened and closed
-      nav_layer_toggle: '.nav-layer-toggle', // CSS selector of elements that toggle the sub_menu elements
-      class_visible: 'opened', // CSS class that indicates an active sub_menu
-      class_current: 'current', // CSS class that indicates a current menu link
-      text_current: 'This is your current location' // aria-label for current menu items
-    }, options );
+        $sub_menu, $nav_layer_toggle, $nav_item, $nav_link_current, id_unique_module;
 
     /**
      * Caches all jQuery Objects for later use.
@@ -21,12 +21,10 @@
      * @private
      */
     function _cacheElements() {
-      $sub_menu = $(settings.sub_menu);
-      $nav_layer_toggle = $(settings.nav_layer_toggle);
-      $nav_item = main_node.find(settings.nav_items);
-      $nav_link_current = main_node.find('.' + settings.class_current);
-
-      console.log($nav_link_current);
+      $sub_menu = self.find(settings.sub_menu);
+      $nav_layer_toggle = self.find(settings.nav_layer_toggle);
+      $nav_item = self.find(settings.nav_items);
+      $nav_link_current = self.find('.' + settings.class_current);
 
       id_unique_module = settings.module_name +  '-' + new Date().getTime();
     }
@@ -191,11 +189,13 @@
           });
         }
       });
-
-
     }
 
-    return init();
+    if (this.length) {
+      init();
+    }
+
+    return this;
 
   };
 
