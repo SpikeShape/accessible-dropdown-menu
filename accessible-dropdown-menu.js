@@ -168,9 +168,9 @@
       $nav_layer_toggle.each(function(index) {
         var $trigger = $(this),
             $submenu_layer = $trigger.closest(settings.nav_items).find(settings.sub_menu),
-            module_id_string = id_unique_module + '-' + index,
-            aria_haspopup_value = $submenu_layer.length ? true : false,
-            is_current = $trigger.hasClass(settings.class_current);
+            submenu_has_id = $submenu_layer.attr('id') !== undefined,
+            module_id_string = submenu_has_id ? $submenu_layer.attr('id') : id_unique_module + '-' + index,
+            aria_haspopup_value = $submenu_layer.length ? true : false;
 
         $trigger.attr({
           'aria-haspopup': aria_haspopup_value,
