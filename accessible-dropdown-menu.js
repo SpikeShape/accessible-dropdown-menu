@@ -49,6 +49,7 @@
      * @private
      */
     function _bindEvents() {
+      var focusintimer = null;
 
       $nav_layer_toggle.on('keydown', function(event) {
         _handleKeyInteraction.call($(this), event);
@@ -63,17 +64,22 @@
       });
 
       $nav_item.on('focusout', function() {
-        _hideSubmenu.call($(this));
+        var $current_navitem = $(this);
+        
+        focusintimer = setTimeout(function() {
+          _hideSubmenu.call($current_navitem);
+        }, 50);
       });
 
       $sub_menu.on('focusin', function() {
+        clearTimeout(focusintimer);
         _showSubmenu.call($(this).closest(settings.nav_items));
       });
 
       $sub_menu.on('focusout', function() {
-        _hideSubmenu.call($(this));
+        clearTimeout(focusintimer);
+        _showSubmenu.call($(this).closest(settings.nav_items));
       });
-
     }
 
     /**
@@ -82,22 +88,25 @@
      * @private
      */
     function _showSubmenu() {
-      var $li = $(this),
-          $navToggle = $li.find(settings.nav_layer_toggle).first(),
-          $submenu = $li.find(settings.sub_menu).first();
+      var $li = $(this);
+      
+      if (!$li.hasClass(settings.class_visible)) {
+        var $navToggle = $li.find(settings.nav_layer_toggle).first();
+        var $submenu = $li.find(settings.sub_menu).first();
 
-      $li.addClass(settings.class_visible);
-
-      if ($submenu.length) {
-
-        $navToggle.attr({
-          'aria-expanded': 'true',
-        });
-
-        $submenu.attr({
-          'aria-hidden': 'false',
-          'aria-expanded': 'true',
-        }).addClass(settings.class_visible);
+        $li.addClass(settings.class_visible);
+  
+        if ($submenu.length) {
+  
+          $navToggle.attr({
+            'aria-expanded': 'true',
+          });
+  
+          $submenu.attr({
+            'aria-hidden': 'false',
+            'aria-expanded': 'true',
+          }).addClass(settings.class_visible);
+        }
       }
     }
 
@@ -107,22 +116,25 @@
      * @private
      */
     function _hideSubmenu() {
-      var $li = $(this),
-          $navToggle = $li.find(settings.nav_layer_toggle).first(),
-          $submenu = $li.find(settings.sub_menu).first();
+      var $li = $(this);
+      
+      if ($li.hasClass(settings.class_visible)) {
+        var $navToggle = $li.find(settings.nav_layer_toggle).first();
+        var $submenu = $li.find(settings.sub_menu).first();
 
-      $li.removeClass(settings.class_visible);
-
-      if ($submenu.length) {
-
-        $navToggle.attr({
-          'aria-expanded': 'false',
-        });
-
-        $submenu.attr({
-          'aria-hidden': 'true',
-          'aria-expanded': 'false',
-        }).removeClass(settings.class_visible);
+        $li.removeClass(settings.class_visible);
+  
+        if ($submenu.length) {
+  
+          $navToggle.attr({
+            'aria-expanded': 'false',
+          });
+  
+          $submenu.attr({
+            'aria-hidden': 'true',
+            'aria-expanded': 'false',
+          }).removeClass(settings.class_visible);
+        }
       }
     }
 
