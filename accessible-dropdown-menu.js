@@ -52,33 +52,33 @@
       var focusintimer = null;
 
       $nav_layer_toggle.on('keydown', function(event) {
-        _handleKeyInteraction.call($(this), event);
+        _handleKeyInteraction($(this), event);
       });
 
       $nav_item.on('mouseenter', function() {
-        _showSubmenu.call($(this));
+        _showSubmenu($(this));
       });
 
       $nav_item.on('mouseleave', function() {
-        _hideSubmenu.call($(this));
+        _hideSubmenu($(this));
       });
 
       $nav_item.on('focusout', function() {
         var $current_navitem = $(this);
         
         focusintimer = setTimeout(function() {
-          _hideSubmenu.call($current_navitem);
+          _hideSubmenu($current_navitem);
         }, 50);
       });
 
       $sub_menu.on('focusin', function() {
         clearTimeout(focusintimer);
-        _showSubmenu.call($(this).closest(settings.nav_items));
+        _showSubmenu($(this).closest(settings.nav_items));
       });
 
       $sub_menu.on('focusout', function() {
         clearTimeout(focusintimer);
-        _showSubmenu.call($(this).closest(settings.nav_items));
+        _showSubmenu($(this).closest(settings.nav_items));
       });
     }
 
@@ -87,9 +87,7 @@
      * @function _showSubmenu
      * @private
      */
-    function _showSubmenu() {
-      var $li = $(this);
-      
+    function _showSubmenu($li) {
       if (!$li.hasClass(settings.class_visible)) {
         var $navToggle = $li.find(settings.nav_layer_toggle).first();
         var $submenu = $li.find(settings.sub_menu).first();
@@ -115,9 +113,7 @@
      * @function _hideSubmenu
      * @private
      */
-    function _hideSubmenu() {
-      var $li = $(this);
-      
+    function _hideSubmenu($li) {      
       if ($li.hasClass(settings.class_visible)) {
         var $navToggle = $li.find(settings.nav_layer_toggle).first();
         var $submenu = $li.find(settings.sub_menu).first();
@@ -144,9 +140,8 @@
      * @private
      * @param {object} event - default event object
      */
-    function _handleKeyInteraction(event) {
-      var $trigger = $(this), // setting.nav_layer_toggle
-          $parentLi = $trigger.closest(settings.nav_items),
+    function _handleKeyInteraction($trigger, event) {
+      var $parentLi = $trigger.closest(settings.nav_items),
           key = event.charCode ? event.charCode : event.keyCode ? event.keyCode : 0;
 
       switch (key) {
@@ -154,12 +149,12 @@
         case 32: // Spacebar
           if ($trigger.attr('aria-expanded') === 'false') {
             event.preventDefault();
-            _showSubmenu.call($parentLi);
+            _showSubmenu($parentLi);
           }
           break;
         case 9: // Tab
           if (event.shiftKey) { // check if shift is pressed
-            _hideSubmenu.call($parentLi);
+            _hideSubmenu($parentLi);
           }
           break;
       }
