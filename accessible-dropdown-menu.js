@@ -49,8 +49,6 @@
      * @private
      */
     function _bindEvents() {
-      var focusintimer = null;
-
       $nav_layer_toggle.on('keydown', function(event) {
         _handleKeyInteraction($(this), event);
       });
@@ -63,22 +61,22 @@
         _hideSubmenu($(this));
       });
 
-      $nav_item.on('focusout', function() {
-        var $current_navitem = $(this);
-        
-        focusintimer = setTimeout(function() {
-          _hideSubmenu($current_navitem);
-        }, 50);
-      });
-
       $sub_menu.on('focusin', function() {
-        clearTimeout(focusintimer);
-        _showSubmenu($(this).closest(settings.nav_items));
+        var $current_navitem = $(this).closest(settings.nav_items);
+
+        clearTimeout($current_navitem.data('timer'));
+        _showSubmenu($current_navitem);
       });
 
       $sub_menu.on('focusout', function() {
-        clearTimeout(focusintimer);
-        _showSubmenu($(this).closest(settings.nav_items));
+        var $current_navitem = $(this).closest(settings.nav_items);
+        var navitem_timer = false;
+        
+        navitem_timer = setTimeout(function() {
+          _hideSubmenu($current_navitem);
+        }, 20);
+
+        $current_navitem.data('timer', navitem_timer);
       });
     }
 
@@ -113,8 +111,9 @@
      * @function _hideSubmenu
      * @private
      */
-    function _hideSubmenu($li) {      
+    function _hideSubmenu($li) {
       if ($li.hasClass(settings.class_visible)) {
+        $li.data('timer', false);
         var $navToggle = $li.find(settings.nav_layer_toggle).first();
         var $submenu = $li.find(settings.sub_menu).first();
 
