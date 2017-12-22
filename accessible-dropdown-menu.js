@@ -71,7 +71,7 @@
       $sub_menu.on('focusout', function() {
         var $current_navitem = $(this).closest(settings.nav_items);
         var navitem_timer = false;
-        
+
         navitem_timer = setTimeout(function() {
           _hideSubmenu($current_navitem);
         }, 20);
@@ -84,6 +84,7 @@
      * Opens Submenu and sets ARIA attributes
      * @function _showSubmenu
      * @private
+     * @param {$object} $li - parent li element of the sub menu that should be opened
      */
     function _showSubmenu($li) {
       if (!$li.hasClass(settings.class_visible)) {
@@ -91,13 +92,13 @@
         var $submenu = $li.find(settings.sub_menu).first();
 
         $li.addClass(settings.class_visible);
-  
+
         if ($submenu.length) {
-  
+
           $navToggle.attr({
             'aria-expanded': 'true',
           });
-  
+
           $submenu.attr({
             'aria-hidden': 'false',
             'aria-expanded': 'true',
@@ -110,6 +111,7 @@
      * Closes Submenu and sets ARIA attributes
      * @function _hideSubmenu
      * @private
+     * @param {$object} $li - parent li element of the sub menu that should be closed
      */
     function _hideSubmenu($li) {
       if ($li.hasClass(settings.class_visible)) {
@@ -118,13 +120,13 @@
         var $submenu = $li.find(settings.sub_menu).first();
 
         $li.removeClass(settings.class_visible);
-  
+
         if ($submenu.length) {
-  
+
           $navToggle.attr({
             'aria-expanded': 'false',
           });
-  
+
           $submenu.attr({
             'aria-hidden': 'true',
             'aria-expanded': 'false',
@@ -137,6 +139,7 @@
      * Handles different key inputs to trigger events
      * @function _handleKeyInteraction
      * @private
+     * @param {$object} $trigger - element that triggers the open and close event
      * @param {object} event - default event object
      */
     function _handleKeyInteraction($trigger, event) {
