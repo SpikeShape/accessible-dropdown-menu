@@ -12,7 +12,7 @@
         sub_menu : '.sub-menu', // CSS selector for the nav layers that need to be opened and closed
         nav_layer_toggle: '.nav-layer-toggle', // CSS selector of elements that toggle the sub_menu elements
         class_visible: 'opened', // CSS class that indicates an active sub_menu
-        class_current: 'current', // CSS class that indicates a current menu link
+        selector_current: '[href="#main"]', // selector that indicates a current menu link
         text_current: 'This is your current location' // aria-label for current menu items
       });
     });
@@ -103,7 +103,7 @@
                         <a href="#link">link</a>
                       </li>
                       <li>
-                        <a class="current" href="#main" aria-current="true">
+                        <a href="#main" aria-current="true">
                           current
                         </a>
                       </li>
@@ -138,7 +138,7 @@
             </div>
           </li>
           <li>
-            <a class="nav-layer-toggle current" href="#main" aria-current="true">
+            <a class="nav-layer-toggle" href="#main" aria-current="true">
               current, has sub level 1
             </a>
             <div class="sub-menu" id="test-id">

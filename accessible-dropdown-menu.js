@@ -9,7 +9,7 @@
         sub_menu : '.sub-menu', // CSS selector for the nav layers that need to be opened and closed
         nav_layer_toggle: '.nav-layer-toggle', // CSS selector of elements that toggle the sub_menu elements
         class_visible: 'opened', // CSS class that indicates an active sub_menu
-        class_current: 'current', // CSS class that indicates a current menu link
+        selector_current: '.current', // selector that indicates a current menu link
         text_current: 'This is your current location' // aria-label for current menu items
       }, options ),
 
@@ -24,7 +24,7 @@
       $sub_menu = self.find(settings.sub_menu);
       $nav_layer_toggle = self.find(settings.nav_layer_toggle);
       $nav_item = self.find(settings.nav_items);
-      $nav_link_current = self.find('.' + settings.class_current);
+      $nav_link_current = self.find(settings.selector_current);
 
       id_unique_module = settings.module_name +  '-' + new Date().getTime();
     }
