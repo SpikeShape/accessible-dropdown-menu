@@ -53,22 +53,26 @@
         _handleKeyInteraction($(this), event);
       });
 
-      $nav_item.on('mouseenter', function() {
+      $nav_item.on('mouseenter', function(event) {
+        event.stopPropagation();
         _showSubmenu($(this));
       });
 
-      $nav_item.on('mouseleave', function() {
+      $nav_item.on('mouseleave', function(event) {
+        event.stopPropagation();
         _hideSubmenu($(this));
       });
 
-      $sub_menu.on('focusin', function() {
+      $sub_menu.on('focusin', function(event) {
+        event.stopPropagation();
         var $current_navitem = $(this).closest(settings.nav_items);
 
         clearTimeout($current_navitem.data('timer'));
         _showSubmenu($current_navitem);
       });
 
-      $sub_menu.on('focusout', function() {
+      $sub_menu.on('focusout', function(event) {
+        event.stopPropagation();
         var $current_navitem = $(this).closest(settings.nav_items);
         var navitem_timer = false;
 
