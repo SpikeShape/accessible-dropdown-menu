@@ -3,17 +3,21 @@
   $.fn.accessibleDropdownMenu = function(options) {
     var self = this,
         settings = $.extend({
-        // These are the defaults.
-        module_name: 'accessible-dropdown-menu', // string that is used to generate unique IDs
-        nav_items: 'li', // element holding both the links and the next layer
-        sub_menu : '.sub-menu', // CSS selector for the nav layers that need to be opened and closed
-        nav_layer_toggle: '.nav-layer-toggle', // CSS selector of elements that toggle the sub_menu elements
-        class_visible: 'opened', // CSS class that indicates an active sub_menu
-        selector_current: '.current', // selector that indicates a current menu link
-        text_current: 'This is your current location' // aria-label for current menu items
-      }, options ),
+          // These are the defaults.
+          module_name: 'accessible-dropdown-menu', // string that is used to generate unique IDs
+          nav_items: 'li', // element holding both the links and the next layer
+          sub_menu : '.sub-menu', // CSS selector for the nav layers that need to be opened and closed
+          nav_layer_toggle: '.nav-layer-toggle', // CSS selector of elements that toggle the sub_menu elements
+          class_visible: 'opened', // CSS class that indicates an active sub_menu
+          selector_current: '.current', // selector that indicates a current menu link
+          text_current: 'This is your current location', // aria-label for current menu items,
+          hoverEventEnabled: true,
+          clickEventEnabled: false,
+          focusEventEnabled: true,
+          mouseenterDelay: 150,
+        }, options ),
 
-        $sub_menu, $nav_layer_toggle, $nav_item, $nav_link_current, id_unique_module;
+        $sub_menu, $nav_layer_toggle, $nav_item, $nav_link_current, id_unique_module, mouseenterTimer;
 
     /**
      * Caches all jQuery Objects for later use.
@@ -40,7 +44,35 @@
 
       _bindEvents();
 
-      return this;
+      self.addClass('adm-initialized');
+
+      return self;
+    }
+
+    /**
+     * Initiates the module.
+     * @function init
+     * @private
+     */
+    function _destroy() {
+      $nav_layer_toggle
+          .off('.' + settings.module_name)
+          .removeAttr('aria-controls aria-owns aria-expanded');
+
+      $sub_menu
+          .off('.' + settings.module_name)
+          .removeAttr('aria-hidden aria-expanded')
+          .removeClass(settings.class_visible);
+
+      $nav_item
+          .off('.' + settings.module_name)
+          .removeClass(settings.class_visible);
+
+      if ($nav_link_current.length) {
+        $nav_link_current.removeAttr('aria-label');
+      }
+
+      self.removeClass('adm-initialized');
     }
 
     /**
@@ -49,51 +81,82 @@
      * @private
      */
     function _bindEvents() {
-      $nav_layer_toggle.on('keydown', function(event) {
+      self.off('accessibleDropdownMenu.destroy').on('accessibleDropdownMenu.destroy', function(event) {
+        event.stopPropagation();
+        _destroy();
+      });
+
+      $nav_layer_toggle.on('keydown.' + settings.module_name, function(event) {
         _handleKeyInteraction($(this), event);
       });
 
-      $nav_item.on('mouseenter', function(event) {
-        event.stopPropagation();
-        _showSubmenu($(this));
-      });
-
-      $nav_item.on('mouseleave', function(event) {
-        event.stopPropagation();
-        _hideSubmenu($(this));
-      });
-
-      $sub_menu.on('focusin', function(event) {
-        event.stopPropagation();
+      $nav_layer_toggle.on('hide.' + settings.module_name, function() {
         var $current_navitem = $(this).closest(settings.nav_items);
-
-        clearTimeout($current_navitem.data('timer'));
-        _showSubmenu($current_navitem);
+        _hideSubmenu($current_navitem);
       });
 
-      $sub_menu.on('focusout', function(event) {
-        event.stopPropagation();
-        var $current_navitem = $(this).closest(settings.nav_items);
-        var navitem_timer = false;
+      if (settings.focusEventEnabled) {
+        $sub_menu.on('focusin.' + settings.module_name, function(event) {
+          event.stopPropagation();
+          var $current_navitem = $(this).closest(settings.nav_items);
 
-        navitem_timer = setTimeout(function() {
-          _hideSubmenu($current_navitem);
-        }, 20);
+          clearTimeout($current_navitem.data('timer'));
+          _showSubmenu($current_navitem);
+        });
 
-        $current_navitem.data('timer', navitem_timer);
-      });
+        $sub_menu.on('focusout.' + settings.module_name, function(event) {
+          event.stopPropagation();
+          var $current_navitem = $(this).closest(settings.nav_items);
+          var navitem_timer = false;
+
+          navitem_timer = setTimeout(function() {
+            _hideSubmenu($current_navitem);
+          }, 150);
+
+          $current_navitem.data('timer', navitem_timer);
+        });
+      }
+
+      if (settings.hoverEventEnabled) {
+        $nav_item.on('mouseenter.' + settings.module_name, function() {
+          var $current_navitem = $(this);
+          mouseenterTimer = setTimeout(function() {
+            _showSubmenu($current_navitem);
+          }, settings.mouseenterDelay);
+        });
+
+        $nav_item.on('mouseleave.' + settings.module_name, function() {
+          clearTimeout(mouseenterTimer);
+          _hideSubmenu($(this));
+        });
+      }
+
+      if (settings.clickEventEnabled) {
+        $nav_layer_toggle.on('click.' + settings.module_name, function(event) {
+          event.preventDefault();
+
+          var $trigger = $(this);
+          var $nav_item = $trigger.closest(settings.nav_items);
+
+          if ($trigger.attr('aria-expanded') === 'true') {
+            _hideSubmenu($nav_item);
+          } else {
+            _showSubmenu($nav_item);
+          }
+        });
+      }
     }
 
     /**
      * Opens Submenu and sets ARIA attributes
      * @function _showSubmenu
      * @private
-     * @param {$object} $li - parent li element of the sub menu that should be opened
+     * @param {jQuery} $li - parent li element of the sub menu that should be opened
      */
     function _showSubmenu($li) {
       if (!$li.hasClass(settings.class_visible)) {
         var $navToggle = $li.find(settings.nav_layer_toggle).first();
-        var $submenu = $li.find(settings.sub_menu).first();
+        var $submenu = $('#'+ $navToggle.attr('aria-controls'));
 
         $li.addClass(settings.class_visible);
 
@@ -107,6 +170,8 @@
             'aria-hidden': 'false',
             'aria-expanded': 'true',
           }).addClass(settings.class_visible);
+
+          $li.trigger('submenu:shown', [$navToggle]);
         }
       }
     }
@@ -115,13 +180,15 @@
      * Closes Submenu and sets ARIA attributes
      * @function _hideSubmenu
      * @private
-     * @param {$object} $li - parent li element of the sub menu that should be closed
+     * @param {jQuery} $li - parent li element of the sub menu that should be closed
      */
     function _hideSubmenu($li) {
-      if ($li.hasClass(settings.class_visible)) {
+      var $navToggle = $li.find(settings.nav_layer_toggle).first();
+      var $submenu = $('#'+ $navToggle.attr('aria-controls'));
+      var no_focus_in_submenu = $submenu.find(':focus').length === 0;
+
+      if ($li.hasClass(settings.class_visible) && no_focus_in_submenu) {
         $li.data('timer', false);
-        var $navToggle = $li.find(settings.nav_layer_toggle).first();
-        var $submenu = $li.find(settings.sub_menu).first();
 
         $li.removeClass(settings.class_visible);
 
@@ -136,6 +203,8 @@
             'aria-expanded': 'false',
           }).removeClass(settings.class_visible);
         }
+
+        $li.trigger('submenu:hidden', [$navToggle]);
       }
     }
 
@@ -143,7 +212,7 @@
      * Handles different key inputs to trigger events
      * @function _handleKeyInteraction
      * @private
-     * @param {$object} $trigger - element that triggers the open and close event
+     * @param {jQuery} $trigger - element that triggers the open and close event
      * @param {object} event - default event object
      */
     function _handleKeyInteraction($trigger, event) {
@@ -180,7 +249,7 @@
 
       $nav_layer_toggle.each(function(index) {
         var $trigger = $(this),
-            $submenu_layer = $trigger.closest(settings.nav_items).find(settings.sub_menu),
+            $submenu_layer = $trigger.closest(settings.nav_items).find(settings.sub_menu).first(),
             submenu_has_id = $submenu_layer.attr('id') !== undefined,
             module_id_string = submenu_has_id ? $submenu_layer.attr('id') : id_unique_module + '-' + index,
             aria_haspopup_value = $submenu_layer.length ? true : false;
