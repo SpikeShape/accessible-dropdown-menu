@@ -13,3 +13,4 @@ documentation
 ./vendor
 .vscode
 *.zip
+.idea
